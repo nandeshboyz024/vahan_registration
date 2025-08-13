@@ -100,26 +100,7 @@ with tab2:
 
 with tab3:
     st.subheader("Manufacturer Trends & Growth")
-    top_makers = (
-        maker_ts.groupby("manufacturer")["registrations"]
-        .sum().sort_values(ascending=False)
-        .head(10).index.tolist()
-    )
-
-    target_makers = manu_filter or top_makers
-    st.caption(f"Showing top makers by total registrations for the selected period.")
-
-    # Prepare available options and validate defaults
-    available_makers = sorted(maker_ts["manufacturer"].dropna().unique())
-    valid_defaults = [m for m in target_makers if m in available_makers]
-
-    selected = st.multiselect(
-        "Select manufacturers",
-        options=available_makers,
-        default=valid_defaults
-    )
-
-    show = maker_ts[maker_ts["manufacturer"].isin(selected)].copy()
+    show = maker_ts[maker_ts["manufacturer"].isin(manu_filter)].copy()
     st.line_chart(show.pivot(index="date", columns="manufacturer", values="registrations"))
 
     latest = show.groupby(["manufacturer"]).apply(
